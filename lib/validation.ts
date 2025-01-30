@@ -7,7 +7,7 @@ export const formSchema = z.object({
   link: z
     .string()
     .url()
-    .refine(async (url) => {
+    .superRefine(async (url) => {
       try {
         const res = await fetch(url, { method: "HEAD" });
         const contentType = res.headers.get("content-type");
