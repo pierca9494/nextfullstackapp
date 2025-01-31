@@ -1,11 +1,16 @@
 import Link from "next/link";
 import Image from "next/image";
 import { auth, signOut, signIn } from "@/auth";
-import { BadgePlus, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import dynamic from "next/dynamic";
 
 const Navbar = async () => {
   const session = await auth();
+  const BadgePlus = dynamic(
+    () => import("lucide-react").then((mod) => mod.BadgePlus),
+    { ssr: false }
+  );
 
   return (
     <header className="px-5 py-3 bg-white shadow-sm font-work-sans">
