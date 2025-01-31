@@ -16,15 +16,16 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // experimental: {
-  //   ppr: "incremental",
-  // },
+  experimental: {
+    // Enable React Server Components if you're using it, and PPR if you want incremental rendering
+    // ppr: "incremental",
+    esmExternals: true, // Add this to ensure proper handling of external ESM libraries
+  },
   devIndicators: {
     appIsrStatus: true,
     buildActivity: true,
     buildActivityPosition: "bottom-right",
   },
-  /* config options here */
 };
 
 export default nextConfig;
