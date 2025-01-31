@@ -6,6 +6,7 @@ import { writeClient } from "@/sanity/lib/write-client";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [GitHub],
+  trustHost: true,
   callbacks: {
     async signIn({ user: { name, email, image }, profile }) {
       const login = profile?.login || "default_username";

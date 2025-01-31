@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  env: {
+    NEXTAUTH_URL: process.env.NEXTAUTH_URL, // Force NextAuth to read the URL
+    AUTH_SECRET: process.env.AUTH_SECRET,
+  },
   typescript: {
     ignoreBuildErrors: true,
   },
