@@ -8,44 +8,43 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [GitHub],
   callbacks: {
     async signIn({ user: { name, email, image }, profile }) {
-      const login = profile?.login || "default_username"; // Fallback if login is undefined
-      const id = profile?.id || ""; // Fallback if id is undefined
-      const bio = profile?.bio || ""; // Fallback if bio is undefined
-      const existingUser = await client
-        .withConfig({ useCdn: false })
-        .fetch(AUTHOR_BY_GITHUB_ID_QUERY, {
-          id,
-        });
+      const login = profile?.login || "default_username";
+      const id = profile?.id || "";
+      const bio = profile?.bio || "";
+
+      const existingUser = await client.fetch(AUTHOR_BY_GITHUB_ID_QUERY, {
+        id,
+      });
 
       if (!existingUser) {
         await writeClient.create({
           _type: "author",
-          id,
+          _id: `github-${id}`, // Unique ID for GitHub users in Sanity
           name,
           username: login,
           email,
           image,
-          bio: bio || "",
+          bio,
         });
       }
 
       return true;
     },
-    async jwt({ token, account, profile }) {
-      if (account && profile) {
-        const user = await client
-          .withConfig({ useCdn: false })
-          .fetch(AUTHOR_BY_GITHUB_ID_QUERY, {
-            id: profile?.id,
-          });
+    async jwt({ token, profile }) {
+      if (profile) {
+        const user = await client.fetch(AUTHOR_BY_GITHUB_ID_QUERY, {
+          id: profile.id,
+        });
 
-        token.id = user?._id;
+        if (user) {
+          token.id = user._id;
+        }
       }
 
       return token;
     },
     async session({ session, token }) {
-      Object.assign(session, { id: token.id });
+      session.user = { ...session.user, id: String(token.id || "") };
       return session;
     },
   },
